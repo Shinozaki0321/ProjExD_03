@@ -144,6 +144,26 @@ class Beam:
         screen.blit(self._img, self._rct)
 
 
+class Explosion:
+    """
+    爆発エフェクトのクラス
+    """
+    def __init__(self, bomb: Bomb):
+        self._imgs = {
+            pg.transform.flip(pg.image.load(f"ex03/fig/explosion.gif"), True, True),
+            pg.transform.flip(pg.image.load(f"ex03/fig/explosion.gif"), False, False)
+        }
+        self._img = self._imgs[0]
+        self._rct = self._img.get_rct()
+        self._rct.center = bomb.rct_center
+        self._life = 2
+
+    def update(self, screen: pg.Surface):
+        i += 1
+        self._img = self._imgs[i%2]
+        screen.blit(self.img, self._rct)
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
