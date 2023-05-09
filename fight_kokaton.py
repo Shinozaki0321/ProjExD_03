@@ -173,6 +173,7 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
+    explosion = [Explosion() for _ in range(NUM_OF_BOMBS)]
 
     tmr = 0
     while True:
@@ -204,6 +205,9 @@ def main():
                 if beam._rct.colliderect(bomb._rct):
                     beam = None
                     del bombs[i]
+                    explosion[i] = Explosion(bomb)
+                    while explosion._life is 0:
+                        explosion._life -= 1
                     bird.change_img(6, screen)
                     break
 
