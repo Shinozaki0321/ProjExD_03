@@ -8,6 +8,7 @@ import pygame as pg
 WIDTH = 1600  # ゲームウィンドウの幅
 HEIGHT = 900  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5  # 爆弾の数
+i = 0
 
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
@@ -150,18 +151,18 @@ class Explosion:
     """
     def __init__(self, bomb: Bomb):
         self._imgs = {
-            pg.transform.flip(pg.image.load(f"ex03/fig/explosion.gif"), True, True),
-            pg.transform.flip(pg.image.load(f"ex03/fig/explosion.gif"), False, False)
+            pg.image.load(f"ex03/fig/explosion.gif"),
+            pg.transform.flip(pg.image.load(f"ex03/fig/explosion.gif"), 1, 1)
         }
         self._img = self._imgs[0]
-        self._rct = self._img.get_rct()
-        self._rct.center = bomb.rct_center
+        self._rct = self._img.get_rct(center=bomb.get_rct().center)
         self._life = 2
 
     def update(self, screen: pg.Surface):
         i += 1
         self._img = self._imgs[i%2]
         screen.blit(self.img, self._rct)
+        self._life -= 1
 
 
 def main():
@@ -173,7 +174,7 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
-    explosion = [Explosion() for _ in range(NUM_OF_BOMBS)]
+    explosion = []
 
     tmr = 0
     while True:
@@ -204,12 +205,13 @@ def main():
             for i, bomb in enumerate(bombs):
                 if beam._rct.colliderect(bomb._rct):
                     beam = None
+                    explosion.append(Explosion(bomb))
                     del bombs[i]
                     explosion[i] = Explosion(bomb)
-                    while explosion._life is 0:
-                        explosion._life -= 1
                     bird.change_img(6, screen)
                     break
+            for i, exp in enumerate(explosion):
+                exp.update(screen)
 
         pg.display.update()
         clock.tick(1000)
